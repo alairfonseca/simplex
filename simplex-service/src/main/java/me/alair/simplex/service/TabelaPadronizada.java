@@ -11,12 +11,12 @@ public class TabelaPadronizada {
 
 	public TabelaPadronizada(Map<Integer, Double[]> linhas, int qtdVariaveisBasicas) {
 		// inicializando variaveis basicas e nao basicas
-		variaveisBasicas[0] = 0;
-		for (int i = 1; i < qtdVariaveisBasicas; i++) {
-			variaveisBasicas[i] = 1;
+		variaveisBasicas = new int[qtdVariaveisBasicas];
+		for (int i = 0; i < qtdVariaveisBasicas; i++) {
+			variaveisBasicas[i] = i;
 		}
-		variaveisNaoBasicas[0] = 0;
-		for (int i = 1; i < linhas.size(); i++) {
+		variaveisNaoBasicas = new int[linhas.size()];
+		for (int i = 0; i < linhas.size(); i++) {
 			variaveisNaoBasicas[i] = i;
 		}
 		matriz = new CelulaTabela[linhas.size()][qtdVariaveisBasicas];
@@ -27,6 +27,20 @@ public class TabelaPadronizada {
 				matriz[i][j].setCelulaSuperior(linhas.get(i)[j]);
 			}
 		}
+	}
+
+	@Override
+	public String toString() {
+		String retorno = "";
+		for (int i = 0; i < matriz.length; i++) {
+			for (int j = 0; j < matriz[1].length; j++) {
+				retorno += matriz[i][j].getCelulaSuperior().toString() + " / "
+						+ matriz[i][j].getCelulaInferior().toString() + "   |   ";
+			}
+			retorno += "\n";
+		}
+
+		return retorno;
 	}
 
 	public static void main(String[] args) {
@@ -42,6 +56,8 @@ public class TabelaPadronizada {
 		linhas.put(3, vaiaveisBasicas3);
 
 		TabelaPadronizada tabela = new TabelaPadronizada(linhas, 3);
+
+		System.out.println(tabela.toString());
 	}
 
 }
