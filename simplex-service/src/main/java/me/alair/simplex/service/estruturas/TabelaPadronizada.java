@@ -43,6 +43,10 @@ public class TabelaPadronizada {
 		return retorno;
 	}
 
+	/**
+	 * main criado apra testar a classe.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		Map<Integer, BigDecimal[]> linhas = new HashMap<Integer, BigDecimal[]>();
 		BigDecimal[] vaiaveisBasicas0 = new BigDecimal[] { new BigDecimal(0.0), new BigDecimal(80.0),

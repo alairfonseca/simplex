@@ -15,37 +15,35 @@ public class Funcao {
 	 * @param variaveisLivres
 	 * @param resultado
 	 * @param variavelAuxiliar
-	 * @param maximizacao
+	 * @param maiorQue
 	 */
-	public Funcao(BigDecimal[] variaveisLivres, BigDecimal resultado, Integer variavelAuxiliar,
-			boolean maximizacao) {
+	public Funcao(BigDecimal[] variaveisLivres, BigDecimal resultado, Integer variavelAuxiliar, boolean maiorQue) {
 		this.variaveisLivres = variaveisLivres;
 		this.resultado = resultado;
-		this.variavelAuxiliar = variavelAuxiliar;
 
-		if (maximizacao) {
-			this.variavelAuxiliar *= -1;
+		if (maiorQue) {
+			this.variavelAuxiliar = variavelAuxiliar * -1;
 		} else {
 			this.variavelAuxiliar = variavelAuxiliar;
 		}
 
 	}
-	
+
 	public Funcao() {
-		
+
 	}
-	
+
 	@Override
 	public String toString() {
 		String retorno = "";
 		String variaveisL = "";
-		
-		for(int i = 0; i < variaveisLivres.length; i++) {
+
+		for (int i = 0; i < variaveisLivres.length; i++) {
 			variaveisL += variaveisLivres[i].toString() + " ";
 		}
-		
+
 		retorno += variavelAuxiliar.toString() + " = " + resultado.toString() + " " + variaveisL;
-		
+
 		return retorno;
 	}
 
@@ -59,7 +57,7 @@ public class Funcao {
 		 * sinais das variaveis livres.
 		 */
 		for (int i = 0; i < variaveisLivres.length; i++) {
-			variaveisLivres[i].multiply(menosUm);
+			variaveisLivres[i] = variaveisLivres[i].multiply(menosUm);
 		}
 
 		/**
@@ -69,30 +67,39 @@ public class Funcao {
 		if (variavelAuxiliar < 0) {
 			variavelAuxiliar *= -1;
 			for (int i = 0; i < variaveisLivres.length; i++) {
-				variaveisLivres[i].multiply(menosUm);
+				variaveisLivres[i] = variaveisLivres[i].multiply(menosUm);
 			}
-			resultado.multiply(menosUm);
+			resultado = resultado.multiply(menosUm);
 		}
-		
+
 		/**
-		 * terceiro passo.
-		 * inverte-se os sinais das variaveis livres.
+		 * terceiro passo. inverte-se os sinais das variaveis livres.
 		 */
 		for (int i = 0; i < variaveisLivres.length; i++) {
-			variaveisLivres[i].multiply(menosUm);
+			variaveisLivres[i] = variaveisLivres[i].multiply(menosUm);
 		}
-		
+
 		return this;
 	}
-	
+
 	public BigDecimal[] concatena(BigDecimal[] arrayA, BigDecimal[] arrayB) {
-		   int tamanhoA = arrayA.length;
-		   int tamanhoB = arrayB.length;
-		   BigDecimal[] arrayConcatenado= new BigDecimal[tamanhoA+tamanhoB];
-		   System.arraycopy(arrayA, 0, arrayConcatenado, 0, tamanhoA);
-		   System.arraycopy(arrayB, 0, arrayConcatenado, tamanhoA, tamanhoB);
-		   return arrayConcatenado;
-		}
+		int tamanhoA = arrayA.length;
+		int tamanhoB = arrayB.length;
+		BigDecimal[] arrayConcatenado = new BigDecimal[tamanhoA + tamanhoB];
+		System.arraycopy(arrayA, 0, arrayConcatenado, 0, tamanhoA);
+		System.arraycopy(arrayB, 0, arrayConcatenado, tamanhoA, tamanhoB);
+		return arrayConcatenado;
+	}
+	
+	public BigDecimal[] concatena(BigDecimal a, BigDecimal[] arrayB) {
+		BigDecimal[] arrayA = new BigDecimal[] {a};
+		int tamanhoA = arrayA.length;
+		int tamanhoB = arrayB.length;
+		BigDecimal[] arrayConcatenado = new BigDecimal[tamanhoA + tamanhoB];
+		System.arraycopy(arrayA, 0, arrayConcatenado, 0, tamanhoA);
+		System.arraycopy(arrayB, 0, arrayConcatenado, tamanhoA, tamanhoB);
+		return arrayConcatenado;
+	}
 
 	public BigDecimal[] getVariaveisLivres() {
 		return variaveisLivres;
@@ -118,11 +125,11 @@ public class Funcao {
 		this.variavelAuxiliar = variavelAuxiliar;
 	}
 
-	public boolean isMaximizacao() {
+	public boolean isMaiorQue() {
 		return maiorQue;
 	}
 
-	public void setMaximizacao(boolean maximizacao) {
-		this.maiorQue = maximizacao;
+	public void setMaiorQue(boolean maiorQue) {
+		this.maiorQue = maiorQue;
 	}
 }
