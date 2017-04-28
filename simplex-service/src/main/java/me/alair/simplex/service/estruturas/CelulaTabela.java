@@ -6,6 +6,19 @@ public class CelulaTabela {
 
 	private BigDecimal celulaSuperior;
 	private BigDecimal celulaInferior;
+	private boolean elementoPermitido;
+
+	/**
+	 * construtor da classe CelulaTabela.
+	 * 
+	 * @param celulaSuperior
+	 * @param celulaInferior
+	 */
+	public CelulaTabela(BigDecimal celulaSuperior, BigDecimal celulaInferior) {
+		this.celulaSuperior = celulaSuperior;
+		this.celulaInferior = celulaInferior;
+		this.elementoPermitido = false;
+	}
 
 	@Override
 	public String toString() {
@@ -16,7 +29,7 @@ public class CelulaTabela {
 		} else {
 			inferior = celulaInferior.toString();
 		}
-		
+
 		if (celulaSuperior == null) {
 			superior = "";
 		} else {
@@ -26,11 +39,6 @@ public class CelulaTabela {
 	}
 
 	public BigDecimal getCelulaSuperior() {
-		// para os casos onde a celula ainda nao foi preenchida, retorne not a
-		// number para evitar nullpointer.
-		if (celulaSuperior == null) {
-			celulaSuperior = null;
-		}
 		return celulaSuperior;
 	}
 
@@ -39,15 +47,18 @@ public class CelulaTabela {
 	}
 
 	public BigDecimal getCelulaInferior() {
-		// para os casos onde a celula ainda nao foi preenchida, retorne not a
-		// number para evitar nullpointer.
-		if (celulaInferior == null) {
-			celulaInferior = null;
-		}
 		return celulaInferior;
 	}
 
-	public void setCelularInferior(BigDecimal celulaInferior) {
+	public boolean isElementoPermitido() {
+		return elementoPermitido;
+	}
+
+	public void setElementoPermitido(boolean elementoPermitido) {
+		this.elementoPermitido = elementoPermitido;
+	}
+
+	public void setCelulaInferior(BigDecimal celulaInferior) {
 		this.celulaInferior = celulaInferior;
 	}
 
