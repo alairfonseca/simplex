@@ -7,6 +7,8 @@ public class CelulaTabela {
 	private BigDecimal celulaSuperior;
 	private BigDecimal celulaInferior;
 	private boolean elementoPermitido;
+	private boolean celulaSuperiorMarcada;
+	private boolean celulaInferiorMarcada;
 
 	/**
 	 * construtor da classe CelulaTabela.
@@ -18,6 +20,15 @@ public class CelulaTabela {
 		this.celulaSuperior = celulaSuperior;
 		this.celulaInferior = celulaInferior;
 		this.elementoPermitido = false;
+		this.celulaSuperiorMarcada = false;
+		this.celulaInferiorMarcada = false;
+	}
+
+	/**
+	 * construtor da classe CelulaTabela.
+	 */
+	public CelulaTabela() {
+
 	}
 
 	@Override
@@ -60,6 +71,22 @@ public class CelulaTabela {
 
 	public void setCelulaInferior(BigDecimal celulaInferior) {
 		this.celulaInferior = celulaInferior;
+	}
+
+	public boolean isCelulaSuperiorMarcada() {
+		return celulaSuperiorMarcada;
+	}
+
+	public void setCelulaSuperiorMarcada(boolean celulaSuperiorMarcada) {
+		this.celulaSuperiorMarcada = celulaSuperiorMarcada;
+	}
+
+	public boolean isCelulaInferiorMarcada() {
+		return celulaInferiorMarcada;
+	}
+
+	public void setCelulaInferiorMarcada(boolean celulaInferiorMarcada) {
+		this.celulaInferiorMarcada = celulaInferiorMarcada;
 	}
 
 }

@@ -90,9 +90,9 @@ public class Funcao {
 		System.arraycopy(arrayB, 0, arrayConcatenado, tamanhoA, tamanhoB);
 		return arrayConcatenado;
 	}
-	
+
 	public BigDecimal[] concatena(BigDecimal a, BigDecimal[] arrayB) {
-		BigDecimal[] arrayA = new BigDecimal[] {a};
+		BigDecimal[] arrayA = new BigDecimal[] { a };
 		int tamanhoA = arrayA.length;
 		int tamanhoB = arrayB.length;
 		BigDecimal[] arrayConcatenado = new BigDecimal[tamanhoA + tamanhoB];
