@@ -1,29 +1,64 @@
-package me.alair.simplex.service.estruturas;
+package me.alair.simplex.service;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.stereotype.Service;
+
+import me.alair.simplex.service.estruturas.CelulaTabela;
+import me.alair.simplex.service.estruturas.TabelaPadronizada;
 import me.alair.simplex.service.estruturas.trocautils.AlgoritmoTrocaUtils;
 import me.alair.simplex.service.funcoes.Funcao;
 import me.alair.simplex.service.funcoes.FuncaoOtima;
 
+@Service
 public class VenttselSimplex {
 
-	private int qtdVariaveisBasicas;
-	private Funcao[] funcoes;
+	/**
+	 * Excuta o metodo simplex de Venttsel.
+	 * 
+	 * @param funcaoObjetivo
+	 */
+	public void executaSimplex(FuncaoOtima funcaoObjetivo) {
 
-	public void executaSimplex(Map<Integer, BigDecimal[]> funcoesTransformadas) {
+		// map que contem as linhas da tabela padronizada.
+		Map<Integer, BigDecimal[]> linhas = new HashMap<Integer, BigDecimal[]>();
+
+		// executa a transformacao da funcao objetivo.
+		funcaoObjetivo.transformaFuncao();
+
+		// adiciona a funcao objetivo na primeira posicao do map.
+		linhas.put(funcaoObjetivo.getVariavelAuxiliar(), funcaoObjetivo
+				.concatena(new BigDecimal(funcaoObjetivo.getVariavelAuxiliar()), funcaoObjetivo.getVariaveisLivres()));
+
+		// array de funcoes que serao adicionadas ao map de linhas.
+		Funcao[] funcoes = new Funcao[funcaoObjetivo.getRestricoes().size()];
+
+		// preenche o array de funcoes.
+		for (int i = 0; i < funcaoObjetivo.getRestricoes().size(); i++) {
+			funcoes[i] = funcaoObjetivo.getRestricoes().get(i);
+		}
+
+		// transforma as funcoes e as adiciona ao map de linhas.
+		for (int i = 0; i < funcoes.length; i++) {
+			funcoes[i] = funcoes[i].transformaFuncao();
+			linhas.put(funcoes[i].getVariavelAuxiliar(),
+					funcoes[i].concatena(funcoes[i].getResultado(), funcoes[i].getVariaveisLivres()));
+		}
+
+		// cria a tabela padronizada.
+		TabelaPadronizada tabelaPadronizada = new TabelaPadronizada(linhas, funcaoObjetivo.getQtdVariaveisNaoBasicas());
 
 		// primeira fase do metodo simplex.
-		// tabela.executaPrimeiraFase();
+		executaPrimeiraFase(tabelaPadronizada);
 
 	}
 
 	/**
 	 * primeira fase do metodo simplex.
 	 */
-	public static void executaPrimeiraFase(TabelaPadronizada tabelaPadronizada) {
+	private static void executaPrimeiraFase(TabelaPadronizada tabelaPadronizada) {
 		int colunaPermitida = 0;
 		int linhaPermissivel = 0;
 		int linhaPermitida = 0;
@@ -64,7 +99,7 @@ public class VenttselSimplex {
 	 * @param colunaPermitida
 	 * @param tabelaPadronizada
 	 */
-	public static void executaAlgoritmoDaTroca(int linhaPermitida, int colunaPermitida,
+	private static void executaAlgoritmoDaTroca(int linhaPermitida, int colunaPermitida,
 			TabelaPadronizada tabelaPadronizada) {
 		// objeto que sera utilizado a partir do passo sete.
 		TabelaPadronizada tabelaReescrita;
@@ -145,7 +180,7 @@ public class VenttselSimplex {
 	 * 
 	 * @param tabelaPadronizada
 	 */
-	public static void executaSegundaFase(TabelaPadronizada tabelaPadronizada) {
+	private static void executaSegundaFase(TabelaPadronizada tabelaPadronizada) {
 		int colunaPermitida = 0;
 		int linhaPermissivel = 0;
 		int linhaPermitida = 0;
@@ -195,6 +230,8 @@ public class VenttselSimplex {
 
 		Map<Integer, BigDecimal[]> linhas = new HashMap<Integer, BigDecimal[]>();
 
+		funcaoOtima.transformaFuncao();
+
 		linhas.put(funcaoOtima.getVariavelAuxiliar(), funcaoOtima
 				.concatena(new BigDecimal(funcaoOtima.getVariavelAuxiliar()), funcaoOtima.getVariaveisLivres()));
 
@@ -214,6 +251,6 @@ public class VenttselSimplex {
 		//
 		// System.out.println("\n\n\n------------------------");
 
-		VenttselSimplex.executaPrimeiraFase(tabela);
+		executaPrimeiraFase(tabela);
 	}
 }

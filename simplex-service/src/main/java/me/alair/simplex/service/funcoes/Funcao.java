@@ -20,13 +20,7 @@ public class Funcao {
 	public Funcao(BigDecimal[] variaveisLivres, BigDecimal resultado, Integer variavelAuxiliar, boolean maiorQue) {
 		this.variaveisLivres = variaveisLivres;
 		this.resultado = resultado;
-
-		if (maiorQue) {
-			this.variavelAuxiliar = variavelAuxiliar * -1;
-		} else {
-			this.variavelAuxiliar = variavelAuxiliar;
-		}
-
+		this.variavelAuxiliar = variavelAuxiliar;
 	}
 
 	public Funcao() {
@@ -50,6 +44,10 @@ public class Funcao {
 	// metodo que executa a transformação da função
 	public Funcao transformaFuncao() {
 		BigDecimal menosUm = new BigDecimal(-1);
+
+		if (maiorQue) {
+			this.variavelAuxiliar = variavelAuxiliar * -1;
+		}
 
 		/**
 		 * primeiro passo. jogar as variaveis livres para a direita,

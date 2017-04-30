@@ -1,12 +1,15 @@
 package me.alair.simplex.service.funcoes;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class FuncaoOtima {
 
 	private BigDecimal[] variaveisLivres;
 	private boolean maximizacao;
 	private Integer variavelAuxiliar;
+	private List<Funcao> restricoes;
+	private int qtdVariaveisNaoBasicas;
 
 	/**
 	 * Construtor da classe FuncaoOtima.
@@ -34,6 +37,10 @@ public class FuncaoOtima {
 		}
 
 		retorno += variavelAuxiliar.toString() + " " + variaveisL;
+
+		for (Funcao funcao : restricoes) {
+			retorno += "\n" + funcao.transformaFuncao().toString();
+		}
 
 		return retorno;
 	}
@@ -97,6 +104,24 @@ public class FuncaoOtima {
 
 	public void setVariavelAuxiliar(Integer variavelAuxiliar) {
 		this.variavelAuxiliar = variavelAuxiliar;
+	}
+
+	public List<Funcao> getRestricoes() {
+		return restricoes;
+	}
+
+	public void setRestricoes(List<Funcao> restricoes) {
+		this.restricoes = restricoes;
+	}
+
+	public int getQtdVariaveisNaoBasicas() {
+		// a quantidade de variaveis nao basicas e definida pela quantidade de
+		// variaveis livres (variaveis da funcao) + 1 (membro livre).
+		return variaveisLivres.length + 1;
+	}
+
+	public void setQtdVariaveisNaoBasicas(int qtdVariaveisNaoBasicas) {
+		this.qtdVariaveisNaoBasicas = qtdVariaveisNaoBasicas;
 	}
 
 }
