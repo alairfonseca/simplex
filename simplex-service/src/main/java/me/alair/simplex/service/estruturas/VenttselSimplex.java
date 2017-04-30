@@ -48,12 +48,11 @@ public class VenttselSimplex {
 				linhaPermitida = tabelaPadronizada.primeiraFaseOperacaoTres(colunaPermitida);
 				executaAlgoritmoDaTroca(linhaPermitida, colunaPermitida, tabelaPadronizada);
 			} else {
-				// a solução permissível não existe.
+				System.out.println("Solucao permissivel nao existe!");
 			}
 
-			// System.out.println(linhaPermitida + " " + colunaPermitida);
 		} else {
-			// segunda etapa do algoritmo
+			executaSegundaFase(tabelaPadronizada);
 		}
 
 	}
@@ -69,6 +68,7 @@ public class VenttselSimplex {
 			TabelaPadronizada tabelaPadronizada) {
 		// objeto que sera utilizado a partir do passo sete.
 		TabelaPadronizada tabelaReescrita;
+		System.out.println("LINHA PERMITIDA E COLUNA PERMITIDA\n - " + linhaPermitida + " - - " + colunaPermitida);
 
 		// PASSO UM.
 		// carrega o elemento permitido.
@@ -84,42 +84,45 @@ public class VenttselSimplex {
 		// PASSO DOIS.
 		// multiplica toda a linha pelo ep inverso e preenche a celula inferior.
 		tabelaPadronizada.multiplicaTodaALinhaPeloEPInverso(linhaPermitida, inversoElementoPermitido);
-
 		System.out.println("DOIS");
 		System.out.println(tabelaPadronizada.toString());
-		/*
-		 * PASSO TRES multiplica toda a coluna pelo - (ep inverso) e preenche a
-		 * celula inferior.
-		 */
+
+		// PASSO TRES
+		// multiplica toda a coluna pelo - (ep inverso) e preenche a celula
+		// inferior.
 		tabelaPadronizada.multiplicaTodaAColunaPeloEPInverso(colunaPermitida, inversoElementoPermitido);
 		System.out.println("TRES");
 		System.out.println(tabelaPadronizada.toString());
+
 		// PASSO QUATRO.
 		tabelaPadronizada.marcaSubCelulasSuperioresDaLinhaPermitida(linhaPermitida);
 		tabelaPadronizada.marcaSubCelulasInferioresDaColunaPermitida(colunaPermitida);
 		System.out.println("QUATRO");
 		System.out.println(tabelaPadronizada.toString());
+
 		// PASSO CINCO.
 		// nas (SCI) vazias, multiplica-se a (SCS) marcada em sua respectiva
 		// coluna com a (SCI) marcada de sua respectiva linha.
 		tabelaPadronizada.multiplicaSCSMarcadaComSCI();
 		System.out.println("CINCO");
 		System.out.println(tabelaPadronizada.toString());
+
 		// PASSO SETE.
 		// reescrever tabela.
 		tabelaReescrita = tabelaPadronizada.reescreveTabela(linhaPermitida, colunaPermitida);
 		System.out.println("SETE");
 		System.out.println(tabelaReescrita.toString());
+
 		// PASSO OITO.
 		// copiar SCIs da tabela original para SCSs da tabela reescrita.
 		tabelaReescrita.copiaSCIsParaSCSs(linhaPermitida, colunaPermitida);
 		System.out.println("OITO");
 		System.out.println(tabelaReescrita.toString());
+
 		// PASSO NOVE.
 		// soma os SCIs com o SCS da tabela padronizada transferindo-os para a
 		// tabela reescrita.
 		tabelaReescrita.somaSCIComSCSLinhasColunasNaoPermitidas(tabelaPadronizada, linhaPermitida, colunaPermitida);
-
 		System.out.println("NOVE");
 		System.out.println(tabelaReescrita.toString());
 
@@ -132,7 +135,44 @@ public class VenttselSimplex {
 		if (tabelaReescrita.buscaValorNegativoColunaML()) {
 			executaPrimeiraFase(tabelaReescrita);
 		} else {
-			// executa segunda fase.
+			executaSegundaFase(tabelaReescrita);
+		}
+
+	}
+
+	/**
+	 * Segunda fase do metodo simplex.
+	 * 
+	 * @param tabelaPadronizada
+	 */
+	public static void executaSegundaFase(TabelaPadronizada tabelaPadronizada) {
+		int colunaPermitida = 0;
+		int linhaPermissivel = 0;
+		int linhaPermitida = 0;
+
+		// procuramos um elemento positivo na linha F(x).
+		colunaPermitida = tabelaPadronizada.segundaFaseOperacaoUm();
+
+		// Se o elemento positivo existe, então a coluna, onde está esse
+		// elemento, é escolhida como permissível.
+		if (colunaPermitida > 0) {
+			// executa a operacao dois da segunda fase.
+			linhaPermissivel = tabelaPadronizada.segundaFaseOperacaoDois(colunaPermitida);
+
+			if (linhaPermissivel > 0) {
+				/*
+				 * Busca-se a linha permitida a partir da identificação do
+				 * Elemento Permitido (EP) que possuir o menor quociente entre
+				 * os membros livres que representam as variáveis básicas (VB).
+				 */
+				linhaPermitida = tabelaPadronizada.segundaFaseOperacaoTres(colunaPermitida);
+				executaAlgoritmoDaTroca(linhaPermitida, colunaPermitida, tabelaPadronizada);
+			} else {
+				System.out.println("Solucao otima nao existe!");
+			}
+
+		} else {
+			System.out.println("Solucao otima encontrada!");
 		}
 
 	}

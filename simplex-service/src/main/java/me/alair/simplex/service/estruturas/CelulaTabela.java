@@ -38,13 +38,13 @@ public class CelulaTabela {
 		if (celulaInferior == null) {
 			inferior = "";
 		} else {
-			inferior = celulaInferior.toString();
+			inferior = celulaInferior.toPlainString();
 		}
 
 		if (celulaSuperior == null) {
 			superior = "";
 		} else {
-			superior = celulaSuperior.toString();
+			superior = celulaSuperior.toPlainString();
 		}
 		return "|	" + superior + "/" + inferior + "	|";
 	}

@@ -142,6 +142,75 @@ public class TabelaPadronizada {
 	}
 
 	/**
+	 * Na linha F(x) procuramos um elemento positivo (não consideramos o membro
+	 * livre).
+	 */
+	public int segundaFaseOperacaoUm() {
+		int colunaPermissiva = -1;
+		// j = 1 pois nao devemos considerar o membro livre.
+		for (int j = 1; j < matriz[1].length; j++) {
+			if (matriz[LINHA_FUNCAO_OTIMA][j].getCelulaSuperior().compareTo(BigDecimal.ZERO) > 0) {
+				colunaPermissiva = j;
+			}
+		}
+
+		return colunaPermissiva;
+	}
+
+	/**
+	 * Na coluna permitida, correspondente ao elemento positivo escolhido,
+	 * procuramos o elemento positivo fora da linha F(x).
+	 */
+	public int segundaFaseOperacaoDois(int colunaPermitida) {
+		int linhaPermissivel = -1;
+
+		for (int i = 1; i < matriz.length; i++) {
+			if (matriz[i][COLUNA_MEMBROS_LIVRES].getCelulaSuperior().compareTo(BigDecimal.ZERO) > 0) {
+				linhaPermissivel = i;
+			}
+		}
+
+		return linhaPermissivel;
+	}
+
+	/**
+	 * Busca-se a linha permitida a partir da identificação do Elemento
+	 * Permitido (EP) que possuir o menor quociente entre os membros livres que
+	 * representam as variáveis básicas (VB).
+	 * 
+	 * @return
+	 */
+	public int segundaFaseOperacaoTres(int colunaPermitida) {
+		BigDecimal menorQuociente = new BigDecimal(Integer.MAX_VALUE);
+		BigDecimal quocienteAtual = new BigDecimal(0);
+		// linha permitida com valor inicial de -1 pois caso nao encontremos
+		// quociente possivel isso quer dizer que essa linha nao existe.
+		int linhaPermitida = -1;
+		/*
+		 * percorremos as linhas da coluna permitida para encontrar o menor
+		 * quociente entre os membros livres, este quociente representara o
+		 * elemento permitido. percorremos a partir do 1 pois a linha 0
+		 * representa a funcao otima.
+		 */
+		try {
+			for (int i = 1; i < matriz.length; i++) {
+				quocienteAtual = (matriz[i][COLUNA_MEMBROS_LIVRES].getCelulaSuperior()
+						.divide(matriz[i][colunaPermitida].getCelulaSuperior()));
+				if (quocienteAtual.compareTo(BigDecimal.ZERO) > 0 && quocienteAtual.compareTo(menorQuociente) < 0) {
+					menorQuociente = quocienteAtual;
+					linhaPermitida = i;
+					matriz[i][colunaPermitida].setElementoPermitido(true);
+					System.out.println("SETANDO O ELEMENTO PERMITIDO : " + matriz[i][colunaPermitida].toString());
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("impossivel dividir por zero.");
+		}
+
+		return linhaPermitida;
+	}
+
+	/**
 	 * multiplica toda a linha permitida pelo inverso do elemento permitido e
 	 * preenche suas respectivas celulas inferiores.
 	 * 
@@ -153,7 +222,8 @@ public class TabelaPadronizada {
 			celula = matriz[linhaPermitida][j];
 
 			if (celula.getCelulaInferior() == null) {
-				celula.setCelulaInferior(celula.getCelulaSuperior().multiply(inversoElementoPermitido));
+				celula.setCelulaInferior(celula.getCelulaSuperior().stripTrailingZeros()
+						.multiply(inversoElementoPermitido.stripTrailingZeros()));
 			}
 		}
 	}
@@ -172,7 +242,8 @@ public class TabelaPadronizada {
 			celula = matriz[i][colunaPermitida];
 
 			if (celula.getCelulaInferior() == null) {
-				celula.setCelulaInferior(celula.getCelulaSuperior().multiply(inversoElementoPermitido));
+				celula.setCelulaInferior(celula.getCelulaSuperior().stripTrailingZeros()
+						.multiply(inversoElementoPermitido.stripTrailingZeros()));
 			}
 		}
 	}
@@ -194,7 +265,7 @@ public class TabelaPadronizada {
 	 */
 	public void marcaSubCelulasInferioresDaColunaPermitida(int colunaPermitida) {
 		CelulaTabela celula;
-		for (int i = 0; i < matriz[1].length; i++) {
+		for (int i = 0; i < matriz.length; i++) {
 			celula = matriz[i][colunaPermitida];
 
 			celula.setCelulaInferiorMarcada(Boolean.TRUE);
@@ -216,9 +287,10 @@ public class TabelaPadronizada {
 					SCSMarcada = buscaSCSMarcada(j);
 					SCIMarcada = buscaSCIMarcada(i);
 
-					celula.setCelulaInferior(SCSMarcada.multiply(SCIMarcada));
-					System.out.println(SCSMarcada.toString() + " x " + SCIMarcada.toString() + " = "
-							+ SCSMarcada.multiply(SCIMarcada).toString());
+					celula.setCelulaInferior(SCSMarcada.stripTrailingZeros().multiply(SCIMarcada.stripTrailingZeros()));
+					System.out.println(
+							SCSMarcada.toPlainString() + " x " + SCIMarcada.toPlainString() + " = " + SCSMarcada
+									.stripTrailingZeros().multiply(SCIMarcada.stripTrailingZeros()).toPlainString());
 				}
 			}
 		}
@@ -233,7 +305,7 @@ public class TabelaPadronizada {
 	private BigDecimal buscaSCSMarcada(int coluna) {
 		CelulaTabela celula;
 		BigDecimal retorno = new BigDecimal(0);
-		for (int i = 0; i < matriz[1].length; i++) {
+		for (int i = 0; i < matriz.length; i++) {
 			celula = matriz[i][coluna];
 			if (celula.isCelulaSuperiorMarcada()) {
 				retorno = celula.getCelulaSuperior();
@@ -265,16 +337,20 @@ public class TabelaPadronizada {
 
 		tabelaReescrita.setVariaveisBasicas(variaveisBasicasReescritas);
 		tabelaReescrita.setVariaveisNaoBasicas(variaveisNaoBasicasReescritas);
-		
+
+		System.out.println("VARIAVEIS BASICAS");
 		for (int i = 0; i < variaveisBasicasReescritas.length; i++) {
 			System.out.print(variaveisBasicasReescritas[i] + " ");
 		}
 
 		System.out.println("\n");
 
+		System.out.println("VARIAVEIS NAO BASICAS");
 		for (int i = 0; i < variaveisNaoBasicasReescritas.length; i++) {
 			System.out.print(variaveisNaoBasicasReescritas[i] + " ");
 		}
+
+		System.out.println("\n");
 
 		return tabelaReescrita;
 	}
@@ -315,8 +391,8 @@ public class TabelaPadronizada {
 		for (int i = 0; i < matriz.length; i++) {
 			for (int j = 0; j < matriz[1].length; j++) {
 				if (i != linhaPermitida && j != colunaPermitida) {
-					matriz[i][j].setCelulaSuperior(matrizPadronizada[i][j].getCelulaSuperior()
-							.add(matrizPadronizada[i][j].getCelulaInferior()));
+					matriz[i][j].setCelulaSuperior(matrizPadronizada[i][j].getCelulaSuperior().stripTrailingZeros()
+							.add(matrizPadronizada[i][j].getCelulaInferior().stripTrailingZeros()));
 				}
 			}
 		}
