@@ -1,6 +1,7 @@
 package me.alair.simplex.service.estruturas;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 
 public class TabelaPadronizada {
@@ -75,7 +76,7 @@ public class TabelaPadronizada {
 		// percorre as linhas da coluna de membros livres.
 		// valor inicial de i = 1 pois devemos desconsiderar a linha que
 		// representa a funcao otima.
-		for (int i = 1; i < matriz[1].length; i++) {
+		for (int i = 1; i < matriz.length; i++) {
 			// verifica se o membro livre é negativo.
 			if (matriz[i][COLUNA_MEMBROS_LIVRES].getCelulaSuperior().compareTo(BigDecimal.ZERO) < 0) {
 				/*
@@ -101,7 +102,7 @@ public class TabelaPadronizada {
 		 */
 		int colunaPermitida = -1;
 		// j comeca com 1 pois a coluna 0 corresponde aos membros livres.
-		for (int j = 1; j < matriz.length; j++) {
+		for (int j = 1; j < matriz[1].length; j++) {
 			if (matriz[linha][j].getCelulaSuperior().compareTo(BigDecimal.ZERO) < 0) {
 				colunaPermitida = j;
 				break;
@@ -126,7 +127,7 @@ public class TabelaPadronizada {
 		try {
 			for (int i = 1; i < matriz.length; i++) {
 				quocienteAtual = (matriz[i][COLUNA_MEMBROS_LIVRES].getCelulaSuperior()
-						.divide(matriz[i][colunaPermitida].getCelulaSuperior()));
+						.divide(matriz[i][colunaPermitida].getCelulaSuperior(), 2, RoundingMode.HALF_UP));
 				if (quocienteAtual.compareTo(menorQuociente) < 0) {
 					menorQuociente = quocienteAtual;
 					linhaPermitida = i;
@@ -195,7 +196,7 @@ public class TabelaPadronizada {
 		try {
 			for (int i = 1; i < matriz.length; i++) {
 				quocienteAtual = (matriz[i][COLUNA_MEMBROS_LIVRES].getCelulaSuperior()
-						.divide(matriz[i][colunaPermitida].getCelulaSuperior()));
+						.divide(matriz[i][colunaPermitida].getCelulaSuperior(), 2, RoundingMode.HALF_UP));
 				if (quocienteAtual.compareTo(BigDecimal.ZERO) > 0 && quocienteAtual.compareTo(menorQuociente) < 0) {
 					menorQuociente = quocienteAtual;
 					linhaPermitida = i;
