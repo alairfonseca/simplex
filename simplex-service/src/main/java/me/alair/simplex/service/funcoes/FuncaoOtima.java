@@ -1,6 +1,7 @@
 package me.alair.simplex.service.funcoes;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 public class FuncaoOtima {
@@ -47,16 +48,20 @@ public class FuncaoOtima {
 
 	// metodo que executa a transformação da função
 	public FuncaoOtima transformaFuncao() {
-		// BigDecimal menosUm = new BigDecimal(-1);
+		BigDecimal menosUm = new BigDecimal(-1);
 		variavelAuxiliar = 0;
-
-		// for (int i = 0; i < variaveisLivres.length; i++) {
-		// variaveisLivres[i] = variaveisLivres[i].multiply(menosUm);
-		// }
-
+		
 		// inverte o objetivo da funcao otima. Ex (F(X) -> MAX) transforma-se em
 		// (F(X) -> MIN).
-		maximizacao = !maximizacao;
+		if (maximizacao) {
+			maximizacao = !maximizacao;	
+			
+		} else {
+			for (int i = 0; i < variaveisLivres.length; i++) {
+				variaveisLivres[i] = variaveisLivres[i].multiply(menosUm).setScale(4, RoundingMode.HALF_UP);
+			}
+		}
+
 
 		return this;
 	}

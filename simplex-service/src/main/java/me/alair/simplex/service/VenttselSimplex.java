@@ -26,7 +26,7 @@ public class VenttselSimplex {
 		Map<Integer, BigDecimal[]> linhas = new HashMap<Integer, BigDecimal[]>();
 
 		// executa a transformacao da funcao objetivo.
-		funcaoObjetivo.transformaFuncao();
+		funcaoObjetivo = funcaoObjetivo.transformaFuncao();
 
 		// adiciona a funcao objetivo na primeira posicao do map.
 		linhas.put(funcaoObjetivo.getVariavelAuxiliar(), funcaoObjetivo

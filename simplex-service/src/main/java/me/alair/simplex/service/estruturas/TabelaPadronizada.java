@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
 
+import me.alair.simplex.service.estruturas.trocautils.AlgoritmoTrocaUtils;
+
 public class TabelaPadronizada {
 
 	private int[] variaveisBasicas;
@@ -126,13 +128,30 @@ public class TabelaPadronizada {
 		 */
 		try {
 			for (int i = 1; i < matriz.length; i++) {
-				quocienteAtual = (matriz[i][COLUNA_MEMBROS_LIVRES].getCelulaSuperior()
-						.divide(matriz[i][colunaPermitida].getCelulaSuperior(), 2, RoundingMode.HALF_UP));
-				if (quocienteAtual.compareTo(menorQuociente) < 0) {
-					menorQuociente = quocienteAtual;
-					linhaPermitida = i;
-					matriz[i][colunaPermitida].setElementoPermitido(true);
-					System.out.println("SETANDO O ELEMENTO PERMITIDO : " + matriz[i][colunaPermitida].toString());
+				// numerador.
+				BigDecimal membroLivreSCS = matriz[i][COLUNA_MEMBROS_LIVRES].getCelulaSuperior();
+				// denomidador.
+				BigDecimal colunaPermitidaSCS = matriz[i][colunaPermitida].getCelulaSuperior();
+				/**
+				 * Somente será identificado como quociente válido aquela fração
+				 * que possuir numerador e denominador com o mesmo sinal e
+				 * denominador maior que zero.
+				 */
+				if (AlgoritmoTrocaUtils.comparaSinal(membroLivreSCS, colunaPermitidaSCS)
+						&& colunaPermitidaSCS.compareTo(BigDecimal.ZERO) > 0) {
+					quocienteAtual = (matriz[i][COLUNA_MEMBROS_LIVRES].getCelulaSuperior()
+							.divide(matriz[i][colunaPermitida].getCelulaSuperior(), 4, RoundingMode.HALF_UP));
+
+					System.out.println("quociente = "
+							+ matriz[i][COLUNA_MEMBROS_LIVRES].getCelulaSuperior().toPlainString() + " / "
+							+ matriz[i][colunaPermitida].getCelulaSuperior().toPlainString() + " = " + quocienteAtual);
+
+					if (quocienteAtual.compareTo(menorQuociente) < 0) {
+						menorQuociente = quocienteAtual;
+						linhaPermitida = i;
+						matriz[i][colunaPermitida].setElementoPermitido(true);
+						System.out.println("SETANDO O ELEMENTO PERMITIDO : " + matriz[i][colunaPermitida].toString());
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -195,13 +214,27 @@ public class TabelaPadronizada {
 		 */
 		try {
 			for (int i = 1; i < matriz.length; i++) {
-				quocienteAtual = (matriz[i][COLUNA_MEMBROS_LIVRES].getCelulaSuperior()
-						.divide(matriz[i][colunaPermitida].getCelulaSuperior(), 2, RoundingMode.HALF_UP));
-				if (quocienteAtual.compareTo(BigDecimal.ZERO) > 0 && quocienteAtual.compareTo(menorQuociente) < 0) {
-					menorQuociente = quocienteAtual;
-					linhaPermitida = i;
-					matriz[i][colunaPermitida].setElementoPermitido(true);
-					System.out.println("SETANDO O ELEMENTO PERMITIDO : " + matriz[i][colunaPermitida].toString());
+				// numerador.
+				BigDecimal membroLivreSCS = matriz[i][COLUNA_MEMBROS_LIVRES].getCelulaSuperior();
+				// denomidador.
+				BigDecimal colunaPermitidaSCS = matriz[i][colunaPermitida].getCelulaSuperior();
+				/**
+				 * Somente será identificado como quociente válido aquela fração
+				 * que possuir numerador e denominador com o mesmo sinal e
+				 * denominador maior que zero.
+				 */
+				if (AlgoritmoTrocaUtils.comparaSinal(membroLivreSCS, colunaPermitidaSCS)
+						&& colunaPermitidaSCS.compareTo(BigDecimal.ZERO) > 0) {
+					quocienteAtual = (membroLivreSCS.divide(colunaPermitidaSCS, 4, RoundingMode.HALF_UP));
+
+					quocienteAtual = (matriz[i][COLUNA_MEMBROS_LIVRES].getCelulaSuperior()
+							.divide(matriz[i][colunaPermitida].getCelulaSuperior(), 4, RoundingMode.HALF_UP));
+					if (quocienteAtual.compareTo(BigDecimal.ZERO) > 0 && quocienteAtual.compareTo(menorQuociente) < 0) {
+						menorQuociente = quocienteAtual;
+						linhaPermitida = i;
+						matriz[i][colunaPermitida].setElementoPermitido(true);
+						System.out.println("SETANDO O ELEMENTO PERMITIDO : " + matriz[i][colunaPermitida].toString());
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -224,7 +257,7 @@ public class TabelaPadronizada {
 
 			if (celula.getCelulaInferior() == null) {
 				celula.setCelulaInferior(celula.getCelulaSuperior().stripTrailingZeros()
-						.multiply(inversoElementoPermitido.stripTrailingZeros()));
+						.multiply(inversoElementoPermitido.stripTrailingZeros()).setScale(4, RoundingMode.HALF_UP));
 			}
 		}
 	}
@@ -237,14 +270,15 @@ public class TabelaPadronizada {
 	 * @param inversoElementoPermitido
 	 */
 	public void multiplicaTodaAColunaPeloEPInverso(int colunaPermitida, BigDecimal inversoElementoPermitido) {
-		inversoElementoPermitido = inversoElementoPermitido.multiply(new BigDecimal(-1));
+		inversoElementoPermitido = inversoElementoPermitido
+				.multiply(new BigDecimal(-1).setScale(4, RoundingMode.HALF_UP));
 		CelulaTabela celula;
 		for (int i = 0; i < matriz.length; i++) {
 			celula = matriz[i][colunaPermitida];
 
 			if (celula.getCelulaInferior() == null) {
 				celula.setCelulaInferior(celula.getCelulaSuperior().stripTrailingZeros()
-						.multiply(inversoElementoPermitido.stripTrailingZeros()));
+						.multiply(inversoElementoPermitido.stripTrailingZeros()).setScale(4, RoundingMode.HALF_UP));
 			}
 		}
 	}
@@ -288,7 +322,8 @@ public class TabelaPadronizada {
 					SCSMarcada = buscaSCSMarcada(j);
 					SCIMarcada = buscaSCIMarcada(i);
 
-					celula.setCelulaInferior(SCSMarcada.stripTrailingZeros().multiply(SCIMarcada.stripTrailingZeros()));
+					celula.setCelulaInferior(SCSMarcada.stripTrailingZeros().multiply(SCIMarcada.stripTrailingZeros())
+							.setScale(4, RoundingMode.HALF_UP));
 					System.out.println(
 							SCSMarcada.toPlainString() + " x " + SCIMarcada.toPlainString() + " = " + SCSMarcada
 									.stripTrailingZeros().multiply(SCIMarcada.stripTrailingZeros()).toPlainString());
