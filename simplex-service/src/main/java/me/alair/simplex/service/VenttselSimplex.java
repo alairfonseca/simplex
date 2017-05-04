@@ -20,7 +20,9 @@ public class VenttselSimplex {
 	 * 
 	 * @param funcaoObjetivo
 	 */
-	public void executaSimplex(FuncaoOtima funcaoObjetivo) {
+	public String executaSimplex(FuncaoOtima funcaoObjetivo) {
+		
+		String retorno = "";
 
 		// map que contem as linhas da tabela padronizada.
 		Map<Integer, BigDecimal[]> linhas = new HashMap<Integer, BigDecimal[]>();
@@ -51,17 +53,20 @@ public class VenttselSimplex {
 		TabelaPadronizada tabelaPadronizada = new TabelaPadronizada(linhas, funcaoObjetivo.getQtdVariaveisNaoBasicas());
 
 		// primeira fase do metodo simplex.
-		executaPrimeiraFase(tabelaPadronizada);
+		retorno = executaPrimeiraFase(tabelaPadronizada);
 
+		return retorno;
 	}
 
 	/**
 	 * primeira fase do metodo simplex.
 	 */
-	private static void executaPrimeiraFase(TabelaPadronizada tabelaPadronizada) {
+	private static String executaPrimeiraFase(TabelaPadronizada tabelaPadronizada) {
 		int colunaPermitida = 0;
 		int linhaPermissivel = 0;
 		int linhaPermitida = 0;
+		
+		String retorno = "";
 
 		// Na tabela padronizada procuramos uma variável básica com membro livre
 		// negativo.
@@ -87,9 +92,10 @@ public class VenttselSimplex {
 			}
 
 		} else {
-			executaSegundaFase(tabelaPadronizada);
+			retorno = executaSegundaFase(tabelaPadronizada);
 		}
-
+		
+		return retorno;
 	}
 
 	/**
@@ -99,12 +105,14 @@ public class VenttselSimplex {
 	 * @param colunaPermitida
 	 * @param tabelaPadronizada
 	 */
-	private static void executaAlgoritmoDaTroca(int linhaPermitida, int colunaPermitida,
+	private static String executaAlgoritmoDaTroca(int linhaPermitida, int colunaPermitida,
 			TabelaPadronizada tabelaPadronizada) {
 		// objeto que sera utilizado a partir do passo sete.
 		TabelaPadronizada tabelaReescrita;
 		System.out.println("LINHA PERMITIDA E COLUNA PERMITIDA\n - " + linhaPermitida + " - - " + colunaPermitida);
 
+		String retorno = "";
+		
 		// PASSO UM.
 		// carrega o elemento permitido.
 		CelulaTabela elementoPermitido = tabelaPadronizada.getMatriz()[linhaPermitida][colunaPermitida];
@@ -170,9 +178,10 @@ public class VenttselSimplex {
 		if (tabelaReescrita.buscaValorNegativoColunaML()) {
 			executaPrimeiraFase(tabelaReescrita);
 		} else {
-			executaSegundaFase(tabelaReescrita);
+			retorno = executaSegundaFase(tabelaReescrita);
 		}
-
+		
+		return retorno; 
 	}
 
 	/**
@@ -180,10 +189,12 @@ public class VenttselSimplex {
 	 * 
 	 * @param tabelaPadronizada
 	 */
-	private static void executaSegundaFase(TabelaPadronizada tabelaPadronizada) {
+	private static String executaSegundaFase(TabelaPadronizada tabelaPadronizada) {
 		int colunaPermitida = 0;
 		int linhaPermissivel = 0;
 		int linhaPermitida = 0;
+		
+		String retorno = "";
 
 		// procuramos um elemento positivo na linha F(x).
 		colunaPermitida = tabelaPadronizada.segundaFaseOperacaoUm();
@@ -201,15 +212,18 @@ public class VenttselSimplex {
 				 * os membros livres que representam as variáveis básicas (VB).
 				 */
 				linhaPermitida = tabelaPadronizada.segundaFaseOperacaoTres(colunaPermitida);
-				executaAlgoritmoDaTroca(linhaPermitida, colunaPermitida, tabelaPadronizada);
+				retorno = executaAlgoritmoDaTroca(linhaPermitida, colunaPermitida, tabelaPadronizada);
 			} else {
 				System.out.println("Solucao otima nao existe!");
+				retorno = "Solucao otima nao existe!";
 			}
 
 		} else {
 			System.out.println("Solucao otima encontrada!");
+			retorno = tabelaPadronizada.resultadoToString();
 		}
-
+		
+		return retorno;
 	}
 
 	/**

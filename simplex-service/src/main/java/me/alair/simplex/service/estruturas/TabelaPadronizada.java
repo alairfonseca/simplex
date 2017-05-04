@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
 
+import org.springframework.web.method.annotation.MethodArgumentConversionNotSupportedException;
+
 import me.alair.simplex.service.estruturas.trocautils.AlgoritmoTrocaUtils;
 
 public class TabelaPadronizada {
@@ -493,6 +495,34 @@ public class TabelaPadronizada {
 		}
 
 		return retorno;
+	}
+
+	/**
+	 * metodo extrai da tabela os valores das variaveis, formata os valores e
+	 * retorna o resultado.
+	 * 
+	 * @return
+	 */
+	public String resultadoToString() {
+		String retorno = "";
+		String variavelResultado = "";
+		String valorZ = "";
+
+		BigDecimal resultadoZ = matriz[0][COLUNA_MEMBROS_LIVRES].getCelulaSuperior();
+
+		if (resultadoZ.compareTo(BigDecimal.ZERO) < 0) {
+			resultadoZ = resultadoZ.multiply(new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP);
+		}
+
+		valorZ = "Z = " + resultadoZ.toString() + "; ";
+
+		for (int i = 1; i < matriz.length; i++) {
+			variavelResultado = matriz[i][COLUNA_MEMBROS_LIVRES].getCelulaSuperior().toString();
+			retorno += "x" + variaveisBasicas[i] + " = " + variavelResultado + "; ";
+		}
+
+		return valorZ + retorno;
+
 	}
 
 	public CelulaTabela[][] getMatriz() {

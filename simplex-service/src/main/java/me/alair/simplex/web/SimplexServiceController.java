@@ -18,9 +18,9 @@ public class SimplexServiceController {
 	@RequestMapping(value = "/simplex", method = RequestMethod.POST)
 	public String simplex(@RequestBody FuncaoOtima funcaoObjetivo) {
 
-		venttselSimplexService.executaSimplex(funcaoObjetivo);
+		
 
-		return funcaoObjetivo.toString();
+		return venttselSimplexService.executaSimplex(funcaoObjetivo);
 	}
 
 }
