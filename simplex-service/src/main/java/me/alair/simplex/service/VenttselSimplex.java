@@ -86,7 +86,7 @@ public class VenttselSimplex {
 				 * os membros livres que representam as variáveis básicas (VB).
 				 */
 				linhaPermitida = tabelaPadronizada.primeiraFaseOperacaoTres(colunaPermitida);
-				executaAlgoritmoDaTroca(linhaPermitida, colunaPermitida, tabelaPadronizada);
+				retorno = executaAlgoritmoDaTroca(linhaPermitida, colunaPermitida, tabelaPadronizada);
 			} else {
 				System.out.println("Solucao permissivel nao existe!");
 			}
@@ -176,7 +176,7 @@ public class VenttselSimplex {
 		 * chame novamente o algoritmo de troca.
 		 */
 		if (tabelaReescrita.buscaValorNegativoColunaML()) {
-			executaPrimeiraFase(tabelaReescrita);
+			retorno = executaPrimeiraFase(tabelaReescrita);
 		} else {
 			retorno = executaSegundaFase(tabelaReescrita);
 		}

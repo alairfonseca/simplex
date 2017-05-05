@@ -2,12 +2,14 @@ package me.alair.simplex.service.funcoes;
 
 import java.math.BigDecimal;
 
+import me.alair.simplex.service.estruturas.trocautils.Igualdade;
+
 public class Funcao {
 
 	private BigDecimal[] variaveisLivres;
 	private BigDecimal resultado;
 	private Integer variavelAuxiliar;
-	private boolean maiorQue;
+	private Igualdade igualdade;
 
 	/**
 	 * Construtor da classe Funcao.
@@ -45,8 +47,10 @@ public class Funcao {
 	public Funcao transformaFuncao() {
 		BigDecimal menosUm = new BigDecimal(-1);
 
-		if (maiorQue) {
-			this.variavelAuxiliar = variavelAuxiliar * -1;
+		if (igualdade.equals(Igualdade.MAIOR) || igualdade.equals(Igualdade.MAIOR_OU_IGUAL)) {
+			variavelAuxiliar = variavelAuxiliar * -1;
+		} else if (igualdade.equals(Igualdade.IGUAL)) {
+			variavelAuxiliar = 0;
 		}
 
 		/**
@@ -123,11 +127,11 @@ public class Funcao {
 		this.variavelAuxiliar = variavelAuxiliar;
 	}
 
-	public boolean isMaiorQue() {
-		return maiorQue;
+	public Igualdade isMaiorQue() {
+		return igualdade;
 	}
 
-	public void setMaiorQue(boolean maiorQue) {
-		this.maiorQue = maiorQue;
+	public void setMaiorQue(Igualdade maiorQue) {
+		this.igualdade = maiorQue;
 	}
 }
