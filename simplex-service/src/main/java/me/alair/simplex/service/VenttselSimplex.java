@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import me.alair.simplex.service.estruturas.CelulaTabela;
 import me.alair.simplex.service.estruturas.TabelaPadronizada;
 import me.alair.simplex.service.estruturas.trocautils.AlgoritmoTrocaUtils;
+import me.alair.simplex.service.estruturas.trocautils.Igualdade;
 import me.alair.simplex.service.funcoes.Funcao;
 import me.alair.simplex.service.funcoes.FuncaoOtima;
 
@@ -21,7 +22,7 @@ public class VenttselSimplex {
 	 * @param funcaoObjetivo
 	 */
 	public String executaSimplex(FuncaoOtima funcaoObjetivo) {
-		
+
 		String retorno = "";
 
 		// map que contem as linhas da tabela padronizada.
@@ -39,7 +40,31 @@ public class VenttselSimplex {
 
 		// preenche o array de funcoes.
 		for (int i = 0; i < funcaoObjetivo.getRestricoes().size(); i++) {
-			funcoes[i] = funcaoObjetivo.getRestricoes().get(i);
+			BigDecimal[] variaveis = funcaoObjetivo.getRestricoes().get(i).getVariaveisLivres();
+			// se a restricao tiver menos variaveis livres que a funcao
+			// objetivo, preenche com zero ate que a quantidade se iguale.
+			if (variaveis.length < funcaoObjetivo.getVariaveisLivres().length) {
+				BigDecimal[] variaveisLivres = new BigDecimal[funcaoObjetivo.getVariaveisLivres().length];
+
+				for (int j = 0; j < variaveis.length; j++) {
+					variaveisLivres[j] = variaveis[j];
+				}
+
+				for (int j = 0; j < variaveisLivres.length; j++) {
+					if (variaveisLivres[j] == null) {
+						variaveisLivres[j] = new BigDecimal(0);
+					}
+				}
+
+				Funcao funcao = funcaoObjetivo.getRestricoes().get(i);
+
+				Funcao func = new Funcao(variaveisLivres, funcao.getResultado(), funcao.getVariavelAuxiliar(),
+						funcao.getMaiorQue());
+
+				funcoes[i] = func;
+			} else {
+				funcoes[i] = funcaoObjetivo.getRestricoes().get(i);
+			}
 		}
 
 		// transforma as funcoes e as adiciona ao map de linhas.
@@ -65,7 +90,7 @@ public class VenttselSimplex {
 		int colunaPermitida = 0;
 		int linhaPermissivel = 0;
 		int linhaPermitida = 0;
-		
+
 		String retorno = "";
 
 		// Na tabela padronizada procuramos uma variável básica com membro livre
@@ -94,7 +119,7 @@ public class VenttselSimplex {
 		} else {
 			retorno = executaSegundaFase(tabelaPadronizada);
 		}
-		
+
 		return retorno;
 	}
 
@@ -112,7 +137,7 @@ public class VenttselSimplex {
 		System.out.println("LINHA PERMITIDA E COLUNA PERMITIDA\n - " + linhaPermitida + " - - " + colunaPermitida);
 
 		String retorno = "";
-		
+
 		// PASSO UM.
 		// carrega o elemento permitido.
 		CelulaTabela elementoPermitido = tabelaPadronizada.getMatriz()[linhaPermitida][colunaPermitida];
@@ -180,8 +205,8 @@ public class VenttselSimplex {
 		} else {
 			retorno = executaSegundaFase(tabelaReescrita);
 		}
-		
-		return retorno; 
+
+		return retorno;
 	}
 
 	/**
@@ -193,7 +218,7 @@ public class VenttselSimplex {
 		int colunaPermitida = 0;
 		int linhaPermissivel = 0;
 		int linhaPermitida = 0;
-		
+
 		String retorno = "";
 
 		// procuramos um elemento positivo na linha F(x).
@@ -222,7 +247,7 @@ public class VenttselSimplex {
 			System.out.println("Solucao otima encontrada!");
 			retorno = tabelaPadronizada.resultadoToString();
 		}
-		
+
 		return retorno;
 	}
 
@@ -236,11 +261,11 @@ public class VenttselSimplex {
 				Boolean.TRUE);
 		Funcao[] funcoes = new Funcao[] {
 				new Funcao(new BigDecimal[] { new BigDecimal(4), new BigDecimal(6) }, new BigDecimal(24),
-						new Integer(3), Boolean.TRUE),
+						new Integer(3), Igualdade.MAIOR_OU_IGUAL),
 				new Funcao(new BigDecimal[] { new BigDecimal(4), new BigDecimal(2) }, new BigDecimal(16),
-						new Integer(4), Boolean.FALSE),
+						new Integer(4), Igualdade.MENOR_OU_IGUAL),
 				new Funcao(new BigDecimal[] { new BigDecimal(0), new BigDecimal(1) }, new BigDecimal(3), new Integer(5),
-						Boolean.FALSE) };
+						Igualdade.MAIOR_OU_IGUAL) };
 
 		Map<Integer, BigDecimal[]> linhas = new HashMap<Integer, BigDecimal[]>();
 

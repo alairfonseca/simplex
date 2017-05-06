@@ -9,7 +9,7 @@ public class Funcao {
 	private BigDecimal[] variaveisLivres;
 	private BigDecimal resultado;
 	private Integer variavelAuxiliar;
-	private Igualdade igualdade;
+	private Igualdade maiorQue;
 
 	/**
 	 * Construtor da classe Funcao.
@@ -17,12 +17,13 @@ public class Funcao {
 	 * @param variaveisLivres
 	 * @param resultado
 	 * @param variavelAuxiliar
-	 * @param maiorQue
+	 * @param igualdade
 	 */
-	public Funcao(BigDecimal[] variaveisLivres, BigDecimal resultado, Integer variavelAuxiliar, boolean maiorQue) {
+	public Funcao(BigDecimal[] variaveisLivres, BigDecimal resultado, Integer variavelAuxiliar, Igualdade maiorQue) {
 		this.variaveisLivres = variaveisLivres;
 		this.resultado = resultado;
 		this.variavelAuxiliar = variavelAuxiliar;
+		this.maiorQue = maiorQue;
 	}
 
 	public Funcao() {
@@ -47,9 +48,9 @@ public class Funcao {
 	public Funcao transformaFuncao() {
 		BigDecimal menosUm = new BigDecimal(-1);
 
-		if (igualdade.equals(Igualdade.MAIOR) || igualdade.equals(Igualdade.MAIOR_OU_IGUAL)) {
+		if (maiorQue.equals(Igualdade.MAIOR) || maiorQue.equals(Igualdade.MAIOR_OU_IGUAL)) {
 			variavelAuxiliar = variavelAuxiliar * -1;
-		} else if (igualdade.equals(Igualdade.IGUAL)) {
+		} else if (maiorQue.equals(Igualdade.IGUAL)) {
 			variavelAuxiliar = 0;
 		}
 
@@ -127,11 +128,11 @@ public class Funcao {
 		this.variavelAuxiliar = variavelAuxiliar;
 	}
 
-	public Igualdade isMaiorQue() {
-		return igualdade;
+	public Igualdade getMaiorQue() {
+		return maiorQue;
 	}
 
 	public void setMaiorQue(Igualdade maiorQue) {
-		this.igualdade = maiorQue;
+		this.maiorQue = maiorQue;
 	}
 }
