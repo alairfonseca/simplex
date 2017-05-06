@@ -17,7 +17,7 @@ public class Funcao {
 	 * @param variaveisLivres
 	 * @param resultado
 	 * @param variavelAuxiliar
-	 * @param igualdade
+	 * @param maiorQue
 	 */
 	public Funcao(BigDecimal[] variaveisLivres, BigDecimal resultado, Integer variavelAuxiliar, Igualdade maiorQue) {
 		this.variaveisLivres = variaveisLivres;

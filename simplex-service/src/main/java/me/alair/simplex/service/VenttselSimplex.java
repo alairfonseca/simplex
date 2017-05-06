@@ -42,7 +42,7 @@ public class VenttselSimplex {
 		for (int i = 0; i < funcaoObjetivo.getRestricoes().size(); i++) {
 			BigDecimal[] variaveis = funcaoObjetivo.getRestricoes().get(i).getVariaveisLivres();
 			// se a restricao tiver menos variaveis livres que a funcao
-			// objetivo, preenche com zero ate que a quantidade se iguale.
+			// objetivo, preenche com zero ate que a quantidade esteja igual.
 			if (variaveis.length < funcaoObjetivo.getVariaveisLivres().length) {
 				BigDecimal[] variaveisLivres = new BigDecimal[funcaoObjetivo.getVariaveisLivres().length];
 
